@@ -100,8 +100,9 @@ class SystemDatasetService(ConfigService):
 
         verrors = ValidationErrors()
         if new['pool'] != config['pool']:
+            system_ready = await self.middleware.call('system.ready')
             ad_enabled = (await self.middleware.call('activedirectory.get_state')) != 'DISABLED'
-            if ad_enabled:
+            if ad_enabled and system_ready:
                 verrors.add(
                     'sysdataset_update.pool',
                     'System dataset location may not be moved while the Active Directory service is enabled.',
