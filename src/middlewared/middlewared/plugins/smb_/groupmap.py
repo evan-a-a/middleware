@@ -43,7 +43,7 @@ class SMBService(Service):
             return []
         elif lm.returncode != 0:
             raise CallError(f"Failed to list membership of alias [{sid}]: "
-                            + lm.stderr.decode())
+                            f"{lm.stderr.decode()}")
 
         output = json.loads(lm.stdout.decode())
         await self.json_check_version(output['version'])
@@ -111,7 +111,7 @@ class SMBService(Service):
         """
         Domain Users, and Domain Admins must have S-1-5-32-545 and S-1-5-32-544
         added to their respective Unix tokens for correct behavior in AD domain.
-        This are added by making them foreign members in the group_mapping for
+        These are added by making them foreign members in the group_mapping for
         the repsective alias. This membership is generated during samba startup
         when newly creating these groups (if they don't exist), but can get
         lost, resulting in unexpected / erratic permissions behavior.
@@ -142,7 +142,7 @@ class SMBService(Service):
                                                  {'groupname': admin_group})
             admin_sid = await self.middleware.call(
                 'idmap.unixid_to_sid',
-                {"id_type": "GROUP", "id": grpobj["gid"]}
+                {"id_type": "GROUP", "id": grp_obj["gid"]}
             )
             if admin_sid:
                 expected.append(admin_sid)
